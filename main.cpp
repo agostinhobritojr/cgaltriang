@@ -19,7 +19,7 @@ typedef CGAL::Exact_predicates_inexact_constructions_kernel               Kernel
 typedef CGAL::Triangulation_vertex_base_with_info_2<unsigned int, Kernel> Vb;
 typedef CGAL::Triangulation_data_structure_2<Vb>                          Tds;
 typedef CGAL::Delaunay_triangulation_2<Kernel, Tds>                       Delaunay;
-typedef Kernel::Point_2                                                   Point;
+typedef Kernel::Point_2                                                   Point2;
 /*
  * cgal stuff
 */
@@ -34,7 +34,7 @@ Mat gray[2];
 const int MAX_COUNT = 9;
 
 
-std::vector< std::pair<Point,unsigned> > cgalPoints;
+std::vector< std::pair<Point2,unsigned> > cgalPoints;
 
 
 static void draw_subdiv( Mat& img, Subdiv2D& subdiv, Scalar delaunay_color )
@@ -190,8 +190,8 @@ int main( int argc, char** argv ){
 
 
 
-  string adress_src ="/home/ambj/workspace/slowmo/Etapa1.jpg";
-  string adress_dst ="/home/ambj/workspace/slowmo/Etapa3.jpg";
+  string adress_src ="/home/ambj/workspace/cgaltriang/Etapa1.jpg";
+  string adress_dst ="/home/ambj/workspace/cgaltriang/Etapa3.jpg";
   Scalar active_facet_color(0, 255, 0), delaunay_color(0,0,0);
   string win = "Delaunay Demo";
   string win2 = "Delaunay Demo 2";
@@ -239,11 +239,18 @@ int main( int argc, char** argv ){
 
   }
 
-  cgalPoints.push_back( std::make_pair( Point(0,0), 0 ) );
-  cgalPoints.push_back( std::make_pair( Point(0,height-1), 1 ) );
-  cgalPoints.push_back( std::make_pair( Point(width-1,0), 2 ) );
-  cgalPoints.push_back( std::make_pair( Point(width-1,height-1), 3 ) );
+  cgalPoints.push_back( std::make_pair( Point2(0,0), 0 ) );
+  cgalPoints.push_back( std::make_pair( Point2(0,height-1), 1 ) );
+  cgalPoints.push_back( std::make_pair( Point2(width-1,0), 2 ) );
+  cgalPoints.push_back( std::make_pair( Point2(width-1,height-1), 3 ) );
 
+  Point aux;
+  for( int i = 0; i < points[0].size(); i++ ){
+    aux = points[0][i];
+    cgalPoints.push_back( std::make_pair( Point2(aux.x,aux.y), i+4 ) );
+//    cout << "aux = " << aux.x << " " << aux.y << endl;
+
+  }
   Delaunay triangulation;
   triangulation.insert(cgalPoints.begin(),cgalPoints.end());
 
@@ -252,9 +259,11 @@ int main( int argc, char** argv ){
 
     Delaunay::Face_handle face = fit;
     std::cout << "Triangle:\t" << triangulation.triangle(face) << std::endl;
-    std::cout << "Vertex 0:\t" << triangulation.triangle(face)[0] << std::endl;
-    std::cout << "Vertex 1:\t" << triangulation.triangle(face)[1] << std::endl;
+  //  std::cout << "Vertex 0:\t" << triangulation.triangle(face)[0] << std::endl;
+ //   std::cout << "Vertex 1:\t" << triangulation.triangle(face)[1] << std::endl;
     std::cout << "Vertex 0:\t" << face->vertex(0)->info() << std::endl;
+    std::cout << "Vertex 1:\t" << face->vertex(1)->info() << std::endl;
+    std::cout << "Vertex 2:\t" << face->vertex(2)->info() << std::endl;
   }
 
 
